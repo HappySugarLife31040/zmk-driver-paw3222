@@ -33,3 +33,14 @@ properties:
       Initialize the sensor in "force awake" mode. This can also be enabled or
       disabled in runtime by the application using the paw32xx_force_awake()
       API.
+
+   scroll-layer:
+    type: int
+    default: 3
+
+  scroll-divider:
+    type: int
+    default: 4
+
+scroll_layer = DT_INST_PROP_OR(n, scroll_layer, 3),
+scroll_divider = DT_INST_PROP_OR(n, scroll_divider, 4),
