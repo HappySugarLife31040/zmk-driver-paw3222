@@ -20,6 +20,7 @@
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
 #include <zephyr/sys/util.h>
+#include <zmk/keymap.h>
 
 #include "../include/paw3222.h"
 
@@ -67,12 +68,17 @@ LOG_MODULE_REGISTER(paw32xx, CONFIG_ZMK_LOG_LEVEL);
 #define RES_MIN (16 * RES_STEP)
 #define RES_MAX (127 * RES_STEP)
 
-struct paw32xx_config {
+sstruct paw32xx_config {
     struct spi_dt_spec spi;
     struct gpio_dt_spec irq_gpio;
     struct gpio_dt_spec power_gpio;
+
     int16_t res_cpi;
+
     bool force_awake;
+
+    uint8_t scroll_layer;
+    uint8_t scroll_divider;
 };
 
 struct paw32xx_data {
