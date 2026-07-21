@@ -33,3 +33,17 @@ properties:
       Initialize the sensor in "force awake" mode. This can also be enabled or
       disabled in runtime by the application using the paw32xx_force_awake()
       API.
+
+  scroll-layer:
+    type: int
+    required: false
+    default: 1
+    description: |
+      Layer number that enables scroll mode.
+
+  scroll-divider:
+    type: int
+    required: false
+    default: 8
+    description: |
+      Divide trackball movement by this value while scrolling.
