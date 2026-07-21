@@ -20,6 +20,7 @@
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
 #include <zephyr/sys/util.h>
+#include <zmk/keymap.h>
 
 #include "../include/paw3222.h"
 
@@ -73,6 +74,8 @@ struct paw32xx_config {
     struct gpio_dt_spec power_gpio;
     int16_t res_cpi;
     bool force_awake;
+    uint8_t scroll_layer;
+    uint8_t scroll_divider;
 };
 
 struct paw32xx_data {
@@ -279,35 +282,12 @@ static void paw32xx_motion_work_handler(struct k_work *work) {
     LOG_DBG("x=%4d y=%4d", x, y);
 
     if (zmk_keymap_layer_active(cfg->scroll_layer)) {
-
-    input_report_rel(
-        data->dev,
-        INPUT_REL_HWHEEL,
-        x / cfg->scroll_divider,
-        false,
-        K_FOREVER);
-
-    input_report_rel(
-        data->dev,
-        INPUT_REL_WHEEL,
-        -y / cfg->scroll_divider,
-        true,
-        K_FOREVER);
-
-} else {
-
-    input_report_rel(data->dev,
-                     INPUT_REL_X,
-                     x,
-                     false,
-                     K_FOREVER);
-
-    input_report_rel(data->dev,
-                     INPUT_REL_Y,
-                     y,
-                     true,
-                     K_FOREVER);
-}
+        input_report_rel(data->dev, INPUT_REL_HWHEEL, x / cfg->scroll_divider, false, K_FOREVER);
+        input_report_rel(data->dev, INPUT_REL_WHEEL, -y / cfg->scroll_divider, true, K_FOREVER);
+    } else {
+        input_report_rel(data->dev, INPUT_REL_X, x, false, K_FOREVER);
+        input_report_rel(data->dev, INPUT_REL_Y, y, true, K_FOREVER);
+    }
 
     // Schedule next check after 15ms without using interrupts
     k_timer_start(&data->motion_timer, K_MSEC(15), K_NO_WAIT);
@@ -623,7 +603,9 @@ static int paw32xx_pm_action(const struct device *dev, enum pm_device_action act
         .irq_gpio = GPIO_DT_SPEC_INST_GET(n, irq_gpios),                                           \
         .power_gpio = GPIO_DT_SPEC_INST_GET_OR(n, power_gpios, {0}),                               \
         .res_cpi = DT_INST_PROP_OR(n, res_cpi, -1),                                                \
-        .force_awake = DT_INST_PROP(n, force_awake),                                               \
+        .force_awake = DT_INST_PROP(n, force_awake),
+        .scroll_layer = DT_INST_PROP_OR(n, scroll_layer, 1),
+        .scroll_divider = DT_INST_PROP_OR(n, scroll_divider, 8),                                               \
     };                                                                                             \
                                                                                                    \
     static struct paw32xx_data paw32xx_data_##n;                                                   \
@@ -635,4 +617,4 @@ static int paw32xx_pm_action(const struct device *dev, enum pm_device_action act
 
 DT_INST_FOREACH_STATUS_OKAY(PAW32XX_INIT)
 
-#endif // DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+#endif // DT_HAS_COMPAT_STATUS_OKAY(DT_DRV
