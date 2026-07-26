@@ -20,7 +20,6 @@
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
 #include <zephyr/sys/util.h>
-#include <zmk/keymap.h>
 
 #include "../include/paw3222.h"
 
