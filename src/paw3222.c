@@ -73,8 +73,6 @@ struct paw32xx_config {
     struct gpio_dt_spec power_gpio;
     int16_t res_cpi;
     bool force_awake;
-    uint8_t scroll_layer;
-    uint8_t scroll_divider;
 };
 
 struct paw32xx_data {
