@@ -606,8 +606,6 @@ static int paw32xx_pm_action(const struct device *dev, enum pm_device_action act
         .power_gpio = GPIO_DT_SPEC_INST_GET_OR(n, power_gpios, {0}),                               \
         .res_cpi = DT_INST_PROP_OR(n, res_cpi, -1),                                                \
         .force_awake = DT_INST_PROP(n, force_awake),                                               \
-        .scroll_layer = DT_INST_PROP_OR(n, scroll_layer, 1),                                       \
-        .scroll_divider = DT_INST_PROP_OR(n, scroll_divider, 8),                                   \
     };                                                                                             \
                                                                                                    \
     static struct paw32xx_data paw32xx_data_##n;                                                   \
