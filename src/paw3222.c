@@ -278,13 +278,36 @@ static void paw32xx_motion_work_handler(struct k_work *work) {
 
     LOG_DBG("x=%4d y=%4d", x, y);
 
-    if (zmk_keymap_layer_state() & BIT(cfg->scroll_layer)) {
-    input_report_rel(data->dev, INPUT_REL_HWHEEL, x / cfg->scroll_divider, false, K_FOREVER);
-    input_report_rel(data->dev, INPUT_REL_WHEEL, -y / cfg->scroll_divider, true, K_FOREVER);
-    } else {
-    input_report_rel(data->dev, INPUT_REL_X, x, false, K_FOREVER);
-    input_report_rel(data->dev, INPUT_REL_Y, y, true, K_FOREVER);
-    }
+     if (zmk_keymap_layer_active(cfg->scroll_layer)) {
+
+    input_report_rel(
+        data->dev,
+        INPUT_REL_HWHEEL,
+        x / cfg->scroll_divider,
+        false,
+        K_FOREVER);
+
+    input_report_rel(
+        data->dev,
+        INPUT_REL_WHEEL,
+        -y / cfg->scroll_divider,
+        true,
+        K_FOREVER);
+
+} else {
+
+    input_report_rel(data->dev,
+                     INPUT_REL_X,
+                     x,
+                     false,
+                     K_FOREVER);
+
+    input_report_rel(data->dev,
+                     INPUT_REL_Y,
+                     y,
+                     true,
+                     K_FOREVER);
+}
 
     // Schedule next check after 15ms without using interrupts
     k_timer_start(&data->motion_timer, K_MSEC(15), K_NO_WAIT);
